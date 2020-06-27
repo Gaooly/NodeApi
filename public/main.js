@@ -44,9 +44,9 @@ getJSON.onclick = () => {
     if (request.readyState === 4 && request.status === 200) {
       console.log(typeof request.response);
       console.log(request.response);
-      const bool = JSON.parse(request.response);
-      console.log(typeof bool);
-      console.log(bool);
+      alert(JSON.parse(request.response).hi)
+
+
     }
   };
   request.send();
