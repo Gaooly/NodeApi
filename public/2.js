@@ -1,1 +1,1 @@
-console.log('我是2.js')
+alert('我是js')

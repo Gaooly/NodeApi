@@ -3,7 +3,7 @@ const ajax = (method, url, callback) => {
 	xhr.open(method, url);
 	xhr.onreadystatechange = () => {
 		if (xhr.readyState === 4 && xhr.status === 200) {
-			callback && callback(xhr.response);
+			callback && callback(xhr.response, xhr);
 		}
 	};
 	xhr.send();
@@ -15,6 +15,34 @@ getCSS.onclick = () => {
 		style.innerHTML = res;
 		document.head.appendChild(style);
 	});
+};
+
+getJS.onclick = () => {
+	ajax('GET', '/2.js', res => {
+		const script = document.createElement('script');
+		script.innerHTML = res;
+		document.body.appendChild(script);
+	});
+};
+
+getHTML.onclick = () => {
+	ajax('GET', '/3.html', res => {
+		const div = document.createElement('div');
+		div.innerHTML = res;
+		document.body.appendChild(div);
+	});
+};
+
+getXML.onclick = () => {
+	ajax('GET', '/4.xml', (_, xhr) => {
+		const dom = xhr.responseXML;
+		const text = dom.getElementsByTagName('warning')[0].textContent;
+		alert(text.trim());
+	});
+};
+
+getJSON.onclick = () => {
+	ajax('GET', '/5.json', res => alert(JSON.parse(res).hi));
 };
 
 
@@ -57,56 +85,3 @@ getPrevious.onclick = () => {
 	};
 	request.send();
 };
-getJSON.onclick = () => {
-	const request = new XMLHttpRequest();
-	request.open('get', '/5.json');
-	request.onreadystatechange = () => {
-		if (request.readyState === 4 && request.status === 200) {
-			console.log(typeof request.response);
-			console.log(request.response);
-			alert(JSON.parse(request.response).hi);
-		}
-	};
-	request.send();
-};
-getXML.onclick = () => {
-	const request = new XMLHttpRequest();
-	request.open('GET', '/4.xml');
-	request.onreadystatechange = () => {
-		if (request.readyState === 4 && request.status === 200) {
-			const dom = request.responseXML;
-			const text = dom.getElementsByTagName('warning')[0].textContent;
-			console.log(text.trim());
-		}
-	};
-	request.send();
-};
-getHTML.onclick = () => {
-	const request = new XMLHttpRequest();
-	request.open('GET', '/3.html');
-	request.onload = () => {
-		// 创建 div 标签
-		const div = document.createElement('div');
-		// 填写 div 内容
-		div.innerHTML = request.response;
-		// 插入到身体里
-		document.body.appendChild(div);
-	};
-	request.onerror = () => {};
-	request.send();
-};
-getJS.onclick = () => {
-	const request = new XMLHttpRequest();
-	request.open('GET', '/2.js');
-	request.onload = () => {
-		// 创建 script 标签
-		const script = document.createElement('script');
-		// 填写 script 内容
-		script.innerHTML = request.response;
-		// 插到身体里
-		document.body.appendChild(script);
-	};
-	request.onerror = () => {};
-	request.send();
-};
-
