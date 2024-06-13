@@ -45,43 +45,36 @@ getJSON.onclick = () => {
 	ajax('GET', '/5.json', res => alert(JSON.parse(res).hi));
 };
 
+const newPage = () => {
+	let n = 1;
+	const max = 3;
+	const page = {};
+	page.next = () => (n < max ? ++n : n);
+	page.prev = () => (n > 1 ? --n : n);
+	page.getn = () => n;
+	return page;
+};
+const page = newPage();
+const isBtnShow = () => {
+	const n = page.getn();
+	getPrevious.style.display = n <= 1 ? 'none' : 'inline-block';
+	getPage.style.display = n >= 3 ? 'none' : 'inline-block';
+};
 
-let n = 1;
-// console.log(getPrevious.style.display)
-getPrevious.style.display = 'none';
-function isBtnShow(page) {
-	page === 1 ? (getPrevious.style.display = 'none') : (getPrevious.style.display = 'inline-block');
-	page === 3 ? (getPage.style.display = 'none') : (getPage.style.display = 'inline-block');
-}
+const renderPage = res => {
+	const array = JSON.parse(res);
+	let arrayLi = [];
+	array.forEach(item => {
+		arrayLi.push(`<li>${item.id}</li>`);
+	});
+	xxx.innerHTML = arrayLi.join('');
+	isBtnShow();
+};
+isBtnShow();
+
 getPage.onclick = () => {
-	const request = new XMLHttpRequest();
-	request.open('GET', `/page${++n}`);
-	request.onreadystatechange = () => {
-		if (request.readyState === 4 && request.status === 200) {
-			const array = JSON.parse(request.response);
-			let arrayLi = [];
-			array.forEach(item => {
-				arrayLi.push(`<li>${item.id}</li>`);
-			});
-			xxx.innerHTML = arrayLi.join('');
-			isBtnShow(n);
-		}
-	};
-	request.send();
+	ajax('GET', `/page${page.next()}`, res => renderPage(res));
 };
 getPrevious.onclick = () => {
-	const request = new XMLHttpRequest();
-	request.open('GET', `/page${--n}`);
-	request.onreadystatechange = () => {
-		if (request.readyState === 4 && request.status === 200) {
-			const array = JSON.parse(request.response);
-			let arrayLi = [];
-			array.forEach(item => {
-				arrayLi.push(`<li>${item.id}</li>`);
-			});
-			xxx.innerHTML = arrayLi.join('');
-			isBtnShow(n);
-		}
-	};
-	request.send();
+	ajax('GET', `/page${page.prev()}`, res => renderPage(res));
 };
