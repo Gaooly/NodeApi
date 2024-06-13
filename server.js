@@ -19,8 +19,7 @@ var server = http.createServer(function (request, response) {
 	var query = parsedUrl.query;
 	var method = request.method;
 
-	console.log(`收到请求！路径（带查询参数）为：${method}/ ${url}`);
-	console.log(request);
+	console.log(`收到请求！路径（带查询参数）为：${method}/ ${pathWithQuery}`);
 
 	if (path === '/index.html') {
 		response.statusCode = 200;
@@ -37,10 +36,10 @@ var server = http.createServer(function (request, response) {
 		response.setHeader('Content-Type', 'text/javascript;charset=utf-8');
 		response.write(fs.readFileSync('public/main.js'));
 		response.end();
-	} else if (path === '/style.css' || path === '/2.css') {
+	} else if (path === '/1.css' || path === '/2.css') {
 		response.statusCode = 200;
 		response.setHeader('Content-Type', 'text/css;charset=utf-8');
-		response.write(fs.readFileSync('public/style.css'));
+		response.write(fs.readFileSync('public/1.css'));
 		response.end();
 	} else if (path === '/2.js') {
 		response.statusCode = 200;
