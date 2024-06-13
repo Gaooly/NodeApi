@@ -19,7 +19,7 @@ var server = http.createServer(function (request, response) {
 	var query = parsedUrl.query;
 	var method = request.method;
 
-	console.log(`收到请求！路径（带查询参数）为：${method}/ ${pathWithQuery}`);
+	console.log(`收到请求！路径（带查询参数）为：${method} ${path} ${queryString}`);
 
 	if (path === '/index.html') {
 		response.statusCode = 200;
@@ -36,7 +36,7 @@ var server = http.createServer(function (request, response) {
 		response.setHeader('Content-Type', 'text/javascript;charset=utf-8');
 		response.write(fs.readFileSync('public/main.js'));
 		response.end();
-	} else if (path === '/1.css' || path === '/2.css') {
+	} else if (path === '/1.css') {
 		response.statusCode = 200;
 		response.setHeader('Content-Type', 'text/css;charset=utf-8');
 		response.write(fs.readFileSync('public/1.css'));
@@ -79,7 +79,10 @@ var server = http.createServer(function (request, response) {
 	} else {
 		response.statusCode = 404;
 		response.setHeader('Content-Type', 'text/html;charset=utf-8');
-		response.write(`你输入的路径不存在对应的内容`);
+		// response.write(`你输入的路径不存在对应的内容`);
+
+		let string = fs.readFileSync('public/404.html').toString();
+		response.write(string);
 		response.end();
 	}
 });
