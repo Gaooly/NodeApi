@@ -9,6 +9,33 @@ const ajax = (method, url, callback) => {
 	xhr.send();
 };
 
+const newPage = () => {
+	let n = 1;
+	const max = 3;
+	const page = {};
+	page.next = () => (n < max ? ++n : n);
+	page.prev = () => (n > 1 ? --n : n);
+	page.getn = () => n;
+	return page;
+};
+const page = newPage();
+const switchBtn = () => {
+	const n = page.getn();
+	getPrev.style.display = n <= 1 ? 'none' : 'inline-block';
+	getNext.style.display = n >= 3 ? 'none' : 'inline-block';
+};
+
+const renderPage = res => {
+	const array = JSON.parse(res);
+	pageList.innerHTML = array.map(item => `<li>${item.id}</li>`).join('');
+	switchBtn();
+};
+
+(() => {
+	ajax('GET', `/page1`, res => renderPage(res));
+	switchBtn();
+})();
+
 getCSS.onclick = () => {
 	ajax('GET', '/1.css', res => {
 		const style = document.createElement('style');
@@ -45,36 +72,10 @@ getJSON.onclick = () => {
 	ajax('GET', '/5.json', res => alert(JSON.parse(res).hi));
 };
 
-const newPage = () => {
-	let n = 1;
-	const max = 3;
-	const page = {};
-	page.next = () => (n < max ? ++n : n);
-	page.prev = () => (n > 1 ? --n : n);
-	page.getn = () => n;
-	return page;
-};
-const page = newPage();
-const isBtnShow = () => {
-	const n = page.getn();
-	getPrevious.style.display = n <= 1 ? 'none' : 'inline-block';
-	getPage.style.display = n >= 3 ? 'none' : 'inline-block';
-};
-
-const renderPage = res => {
-	const array = JSON.parse(res);
-	let arrayLi = [];
-	array.forEach(item => {
-		arrayLi.push(`<li>${item.id}</li>`);
-	});
-	xxx.innerHTML = arrayLi.join('');
-	isBtnShow();
-};
-isBtnShow();
-
-getPage.onclick = () => {
+getNext.onclick = () => {
 	ajax('GET', `/page${page.next()}`, res => renderPage(res));
 };
-getPrevious.onclick = () => {
+
+getPrev.onclick = () => {
 	ajax('GET', `/page${page.prev()}`, res => renderPage(res));
 };
